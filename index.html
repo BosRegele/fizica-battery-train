@@ -210,14 +210,19 @@ tr:last-child td{border-bottom:none;}
   <div class="sn">03 / Câmpul Magnetic</div>
   <p class="tag">Vizualizare</p>
   <h2 class="t2" style="margin-bottom:.6rem;">Câmpul magnetic generat de spire</h2>
-  <p class="sub" style="margin-bottom:1rem;font-size:.95rem;">Spirele active acționează ca un solenoid — câmpul magnetic se închide în bucle în jurul lor.</p>
-  <div class="cbox" style="width:100%;max-width:960px;">
-    <canvas id="bfc" style="width:100%;display:block;" height="300"></canvas>
-    <div class="legend">
-      <div class="li"><div class="ld" style="background:var(--copper)"></div>Spire inactive (fără curent)</div>
-      <div class="li"><div class="ld" style="background:var(--copperL);box-shadow:0 0 5px var(--copper)"></div>Spire active (I ≠ 0)</div>
-      <div class="li"><div class="ld" style="background:var(--blue)"></div>Linii câmp magnetic B</div>
-      <div class="li"><div class="ld" style="background:rgba(232,150,58,.8)"></div>Curent în spire</div>
+  <p class="sub" style="margin-bottom:1.2rem;font-size:.95rem;">Spirele active acționează ca un solenoid — câmpul se închide în bucle identice cu cele ale unui magnet bară.</p>
+  <div style="display:flex;gap:2.5rem;justify-content:center;align-items:center;flex-wrap:wrap;max-width:1020px;margin:0 auto;">
+    <div style="text-align:center;flex:2;min-width:260px;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/VFPt_Solenoid_correct2.svg"
+           alt="Câmpul magnetic al unui solenoid"
+           style="width:100%;max-width:500px;height:auto;background:#fff;border-radius:10px;padding:10px;display:block;margin:0 auto;">
+      <p style="font-size:.7rem;color:#666;margin-top:.4rem;">Linii de câmp B ale unui solenoid · Wikimedia Commons CC BY-SA 3.0</p>
+    </div>
+    <div style="text-align:center;flex:1;min-width:180px;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/VFPt_cylindrical_tightly-wound_coil-and-bar-magnet-comparison_stacked.svg"
+           alt="Comparație solenoid vs magnet bară"
+           style="width:100%;max-width:260px;height:auto;background:#fff;border-radius:10px;padding:10px;display:block;margin:0 auto;">
+      <p style="font-size:.7rem;color:#666;margin-top:.4rem;">Solenoid ≡ Magnet bară · câmpul extern este identic</p>
     </div>
   </div>
 </div>
@@ -495,7 +500,7 @@ document.addEventListener('fullscreenchange',()=>{
 });
 function onSlide(i){
   if(i===0&&!heroInited)initHero();
-  if(i===3&&!bfInited)initBF();
+
   if(i===4&&!lInited)initLorentz();
   if(i===5&&!rhInited)initRH();
   if(i===6&&!dInited)initDir();
@@ -568,101 +573,6 @@ function heroFrame(){
 }
 initHero();
 
-// ── B FIELD CANVAS (slide 4 — câmpul magnetic) ───────────────
-const bfc=document.getElementById('bfc');
-const bfCtx=bfc.getContext('2d');
-let bft=0,bfInited=false;
-function initBF(){bfInited=true;bfc.width=bfc.offsetWidth;bfc.height=300;bfLoop();}
-function bfLoop(){
-  const W=bfc.width||bfc.offsetWidth,H=300;
-  if(!W){requestAnimationFrame(bfLoop);return;}
-  bfCtx.clearRect(0,0,W,H);
-  bfCtx.fillStyle='#08081a';bfCtx.fillRect(0,0,W,H);
-  const CY=H/2,TURNS=28,tw=(W-80)/TURNS,cs=40,CR=40;
-  const bw=100,bh=24,bXp=W/2-bw/2,bCX=W/2,mr=bh/2+6,aR=tw*3.5;
-
-  // ── Linii de câmp externe (elipse punctate albastre) ─────────
-  for(let r=3;r>=0;r--){
-    const fY=CR+22+r*18,fX=bw/2+mr+10+r*22;
-    const al=0.12+r*0.06;
-    bfCtx.setLineDash([6,7]);
-    bfCtx.strokeStyle=`rgba(79,195,247,${al+0.22})`;
-    bfCtx.lineWidth=r===0?2:1.5;
-    bfCtx.beginPath();bfCtx.ellipse(bCX,CY,fX,fY,0,0,Math.PI*2);bfCtx.stroke();
-    bfCtx.setLineDash([]);
-    // săgeată sus (câmpul iese din polul N stânga → merge spre dreapta deasupra)
-    const a1=-Math.PI/2-0.25,a2=-Math.PI/2+0.05;
-    const tx1=bCX+fX*Math.cos(a1),ty1=CY+fY*Math.sin(a1);
-    const tx2=bCX+fX*Math.cos(a2),ty2=CY+fY*Math.sin(a2);
-    const tang=Math.atan2(ty2-ty1,tx2-tx1);
-    bfCtx.fillStyle=`rgba(79,195,247,${al+0.45})`;
-    bfCtx.beginPath();bfCtx.moveTo(tx2,ty2);
-    bfCtx.lineTo(tx2-9*Math.cos(tang-.4),ty2-9*Math.sin(tang-.4));
-    bfCtx.lineTo(tx2-9*Math.cos(tang+.4),ty2-9*Math.sin(tang+.4));
-    bfCtx.closePath();bfCtx.fill();
-    // săgeată jos (câmpul intră în polul S dreapta → merge spre stânga dedesubt)
-    const b1=Math.PI/2+0.05,b2=Math.PI/2+0.35;
-    const bx1=bCX+fX*Math.cos(b1),by1=CY+fY*Math.sin(b1);
-    const bx2=bCX+fX*Math.cos(b2),by2=CY+fY*Math.sin(b2);
-    const bang=Math.atan2(by2-by1,bx2-bx1);
-    bfCtx.fillStyle=`rgba(79,195,247,${al+0.45})`;
-    bfCtx.beginPath();bfCtx.moveTo(bx2,by2);
-    bfCtx.lineTo(bx2-9*Math.cos(bang-.4),by2-9*Math.sin(bang-.4));
-    bfCtx.lineTo(bx2-9*Math.cos(bang+.4),by2-9*Math.sin(bang+.4));
-    bfCtx.closePath();bfCtx.fill();
-  }
-
-  // ── Arcuri spate ──────────────────────────────────────────────
-  for(let i=0;i<TURNS;i++){
-    const cx=cs+i*tw+tw/2;
-    bfCtx.beginPath();bfCtx.ellipse(cx,CY,tw*.47,CR,0,0,Math.PI);
-    bfCtx.strokeStyle='rgba(100,55,15,.4)';bfCtx.lineWidth=2;bfCtx.stroke();
-  }
-
-  // ── Săgeată B axial intern ────────────────────────────────────
-  bfCtx.shadowColor='rgba(79,195,247,.5)';bfCtx.shadowBlur=10;
-  arw(bfCtx,bCX+bw/2+mr-4,CY,bCX-bw/2-mr+4,CY,'#4fc3f7',2.5);
-  bfCtx.shadowBlur=0;
-  bfCtx.fillStyle='rgba(79,195,247,.85)';bfCtx.font='bold 11px system-ui';
-  bfCtx.textAlign='center';bfCtx.fillText('B axial',bCX,CY-10);bfCtx.textAlign='left';
-
-  // ── Baterie + magneți ─────────────────────────────────────────
-  battBody(bfCtx,bXp,CY,bw,bh);
-  magnet(bfCtx,bXp,CY,mr,false);      // S stânga → N polul solenoidului stânga
-  magnet(bfCtx,bXp+bw,CY,mr,true);   // N dreapta → S polul solenoidului dreapta
-
-  // ── Arcuri față + puncte curent ──────────────────────────────
-  for(let i=0;i<TURNS;i++){
-    const cx=cs+i*tw+tw/2,dist=Math.abs(cx-bCX),g=Math.max(0,1-dist/aR);
-    bfCtx.beginPath();bfCtx.ellipse(cx,CY,tw*.47,CR,0,Math.PI,0);
-    if(g>0){
-      bfCtx.strokeStyle=`rgba(${Math.floor(193+55*g)},${Math.floor(127+85*g)},58,${.5+.5*g})`;
-      bfCtx.lineWidth=2+g*3;bfCtx.shadowColor=`rgba(232,150,58,${g*.8})`;bfCtx.shadowBlur=14*g;
-    }else{bfCtx.strokeStyle='rgba(193,127,58,.45)';bfCtx.lineWidth=1.5;bfCtx.shadowBlur=0;}
-    bfCtx.stroke();bfCtx.shadowBlur=0;
-    if(g>.22){
-      const a=bft*.055%(Math.PI*2);
-      bfCtx.beginPath();bfCtx.arc(cx+Math.cos(a)*tw*.47,CY+Math.sin(a)*CR,3,0,Math.PI*2);
-      bfCtx.fillStyle=`rgba(232,150,58,${g*.8})`;bfCtx.fill();
-    }
-  }
-
-  // ── Etichete N/S solenoid ─────────────────────────────────────
-  bfCtx.font='bold 12px system-ui';bfCtx.textAlign='center';
-  bfCtx.fillStyle='rgba(255,100,100,.85)';bfCtx.fillText('N',bCX-bw/2-mr-22,CY-CR-14);
-  bfCtx.fillStyle='rgba(100,150,255,.85)';bfCtx.fillText('S',bCX+bw/2+mr+22,CY-CR-14);
-  bfCtx.fillStyle='rgba(255,255,255,.2)';bfCtx.font='10px system-ui';
-  bfCtx.fillText('pol solenoid',bCX-bw/2-mr-22,CY-CR-3);
-  bfCtx.fillText('pol solenoid',bCX+bw/2+mr+22,CY-CR-3);
-  // zone labels
-  bfCtx.fillStyle='rgba(193,127,58,.5)';
-  bfCtx.fillText('spire active',bCX,H-8);
-  bfCtx.fillStyle='rgba(255,255,255,.18)';
-  bfCtx.fillText('spire inactive',cs+tw*2,H-8);
-  bfCtx.fillText('spire inactive',W-cs-tw*2,H-8);
-  bfCtx.textAlign='left';
-  bft++;requestAnimationFrame(bfLoop);
-}
 
 // ── LORENTZ CANVAS (slide 4) ──────────────────────────────────
 const lc=document.getElementById('lc');
