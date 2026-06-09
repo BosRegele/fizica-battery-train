@@ -256,39 +256,6 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- ══ 5 REGULA MAINII ══ -->
-<div class="slide" id="s5">
-  <div class="sn">04 / Direcția forței</div>
-  <div class="two" style="max-width:1000px;align-items:center;">
-    <div class="tl">
-      <p class="tag">Regula mâinii stângi</p>
-      <h2 class="t2" style="margin-bottom:1rem;">Cum găsim direcția lui F</h2>
-      <div class="rstep">
-        <div class="ri" style="background:rgba(79,195,247,.15);color:var(--blue);">①</div>
-        <div><strong style="color:var(--blue)">Degetul arătător = B</strong>
-          <p style="font-size:.82rem;color:var(--muted);margin-top:.15rem;">Orientat în direcția câmpului magnetic</p></div>
-      </div>
-      <div class="rstep">
-        <div class="ri" style="background:rgba(193,127,58,.15);color:var(--copperL);">②</div>
-        <div><strong style="color:var(--copperL)">Degetul mijlociu = I</strong>
-          <p style="font-size:.82rem;color:var(--muted);margin-top:.15rem;">Orientat în sensul curentului electric</p></div>
-      </div>
-      <div class="rstep" style="margin-bottom:0;">
-        <div class="ri" style="background:rgba(80,255,128,.15);color:var(--green);">③</div>
-        <div><strong style="color:var(--green)">Degetul mare = F</strong>
-          <p style="font-size:.82rem;color:var(--muted);margin-top:.15rem;">Indică direcția forței Lorentz</p></div>
-      </div>
-      <div style="margin-top:1rem;padding:.8rem 1.1rem;background:rgba(240,192,64,.07);border:1px solid rgba(240,192,64,.2);border-radius:10px;">
-        <p style="font-size:.82rem;color:var(--muted);">Forța este <span style="color:var(--gold);font-weight:700;">perpendiculară</span> atât pe curent cât și pe câmpul magnetic — nu poate face lucru mecanic direct, ci doar schimbă direcția de mișcare a sarcinilor.</p>
-      </div>
-    </div>
-    <div class="cbox" style="height:360px;position:relative;">
-      <canvas id="rhc" style="width:100%;height:100%;display:block;"></canvas>
-      <div style="position:absolute;bottom:.6rem;left:0;right:0;text-align:center;font-size:.7rem;color:var(--muted);">Vizualizare 3D — F = I·L×B</div>
-    </div>
-  </div>
-</div>
-
 <!-- ══ 6 DE CE O SINGURA DIRECTIE ══ -->
 <div class="slide" id="s6">
   <div class="sn">05 / Direcție unică</div>
@@ -389,27 +356,6 @@ tr:last-child td{border-bottom:none;}
   <p style="color:var(--muted);font-size:.82rem;margin-top:.8rem;">Același experiment pe care îl poți construi acasă cu materiale de ~20 lei</p>
 </div>
 
-<!-- ══ 10 EXPERIMENT ══ -->
-<div class="slide" id="s10">
-  <div class="sn">09 / Experiment</div>
-  <p class="tag">DIY — Construiește acasă</p>
-  <h2 class="t2" style="margin-bottom:.9rem;">De ce ai nevoie</h2>
-  <div class="mats" style="max-width:880px;margin-bottom:1rem;">
-    <div class="mat"><div class="mi">🔋</div><div><div class="mn">Baterie AA</div><div class="md">1.5V, orice marcă</div></div></div>
-    <div class="mat"><div class="mi">🧲</div><div><div class="mn">Magneți Neodim</div><div class="md">2 buc — HDD vechi sau ~10 lei online</div></div></div>
-    <div class="mat"><div class="mi">🔴</div><div><div class="mn">Sârmă cupru ~1mm</div><div class="md">2–3 m, din cabluri dezizolate</div></div></div>
-    <div class="mat"><div class="mi">📏</div><div><div class="mn">Tub Ø 16 mm</div><div class="md">Marker gros, sticlă, țeavă PVC</div></div></div>
-  </div>
-  <div class="g3" style="max-width:880px;grid-template-columns:repeat(3,1fr);">
-    <div class="card"><div class="ci">1️⃣</div><h3>Înfășoară spirala</h3>
-      <p>100–150 ture strânse pe tubul de ~16 mm. Scoate tubul cu grijă → ai tunelul.</p></div>
-    <div class="card"><div class="ci">2️⃣</div><h3>Pregătește trenul</h3>
-      <p>Lipește câte un magnet neodim la fiecare capăt al bateriei AA — contact electric direct.</p></div>
-    <div class="card"><div class="ci">3️⃣</div><h3>Lansează!</h3>
-      <p>Introdu bateria în spirală. Va porni singură! Dacă nu merge, întoarce bateria invers.</p></div>
-  </div>
-</div>
-
 <!-- ══ 11 APLICATII ══ -->
 <div class="slide" id="s11">
   <div class="sn">10 / Aplicații</div>
@@ -502,9 +448,8 @@ function onSlide(i){
   if(i===0&&!heroInited)initHero();
 
   if(i===4&&!lInited)initLorentz();
-  if(i===5&&!rhInited)initRH();
-  if(i===6&&!dInited)initDir();
-  if(i===8&&!simInited)initSim();
+  if(i===5&&!dInited)initDir();
+  if(i===7&&!simInited)initSim();
 }
 
 // ── UTILS ─────────────────────────────────────────────────────
@@ -637,76 +582,6 @@ function lFrame(){
   lt++;requestAnimationFrame(lFrame);
 }
 
-// ── RIGHT HAND RULE CANVAS (slide 5) ─────────────────────────
-const rhc=document.getElementById('rhc');
-const rx=rhc.getContext('2d');
-let rht=0,rhInited=false;
-function initRH(){rhInited=true;rhc.width=rhc.offsetWidth;rhc.height=rhc.offsetHeight||360;rhFrame();}
-function rhFrame(){
-  const W=rhc.width||rhc.offsetWidth,H=rhc.height||360;
-  if(!W||!H){requestAnimationFrame(rhFrame);return;}
-  rx.clearRect(0,0,W,H);
-  rx.fillStyle='#08081a';rx.fillRect(0,0,W,H);
-
-  const cx=W/2,cy=H/2;
-
-  // Draw 3D coordinate axes (isometric style)
-  const sc=90;
-  // I axis → right + slightly down
-  const ix=sc,iy=sc*.18;
-  // F axis → up
-  const fx=0,fy=-sc;
-  // B axis → back-left
-  const bx=-sc*.65,by=sc*.45;
-
-  // Draw subtle arc showing rotation from I to F
-  rx.strokeStyle='rgba(255,255,255,.08)';rx.lineWidth=1;rx.setLineDash([3,6]);
-  rx.beginPath();rx.arc(cx,cy,sc*.6,Math.PI*1.7,Math.PI*2.3);rx.stroke();
-  rx.setLineDash([]);
-
-  // Labels first (behind arrows)
-  rx.font='bold 13px system-ui';
-  rx.fillStyle='rgba(79,195,247,.5)';
-  rx.fillText('B  (câmp magnetic)',cx+bx-10,cy+by+18);
-
-  // Draw axes
-  rx.shadowBlur=15;
-  rx.shadowColor='rgba(79,195,247,.7)';
-  arw(rx,cx,cy,cx+bx,cy+by,'#4fc3f7',3);
-  rx.shadowColor='rgba(232,150,58,.7)';
-  arw(rx,cx,cy,cx+ix,cy+iy,'#e8963a',3);
-  rx.shadowColor='rgba(80,255,128,.7)';
-  arw(rx,cx,cy,cx+fx,cy+fy,'#50ff80',3);
-  rx.shadowBlur=0;
-
-  // Labels
-  rx.font='bold 14px system-ui';
-  rx.fillStyle='#e8963a';rx.fillText('I  (curent)',cx+ix+8,cy+iy+5);
-  rx.fillStyle='#50ff80';rx.fillText('F  (forță)',cx+fx+6,cy+fy-8);
-  rx.fillStyle='#4fc3f7';rx.fillText('B',cx+bx-22,cy+by+5);
-
-  // Pulse: current dot moving along I axis
-  const dotT=rht*.05%1;
-  const dpx=cx+ix*dotT,dpy=cy+iy*dotT;
-  rx.beginPath();rx.arc(dpx,dpy,4,0,Math.PI*2);
-  rx.fillStyle='rgba(232,150,58,.8)';rx.fill();
-
-  // B field circles (into page representation)
-  for(let i=0;i<6;i++){
-    const angle=i/6*Math.PI*2,r=35;
-    const bpx=cx+bx/2+Math.cos(angle)*r;
-    const bpy=cy+by/2+Math.sin(angle)*r;
-    rx.strokeStyle='rgba(79,195,247,.2)';rx.lineWidth=1;
-    rx.beginPath();rx.moveTo(bpx-5,bpy-5);rx.lineTo(bpx+5,bpy+5);rx.stroke();
-    rx.beginPath();rx.moveTo(bpx+5,bpy-5);rx.lineTo(bpx-5,bpy+5);rx.stroke();
-  }
-
-  // Formula at bottom
-  rx.fillStyle='rgba(255,255,255,.18)';rx.font='13px "Courier New"';rx.textAlign='center';
-  rx.fillText('F = I · L × B',W/2,H-14);rx.textAlign='left';
-
-  rht++;requestAnimationFrame(rhFrame);
-}
 
 // ── DIRECTION CANVAS (slide 6) ────────────────────────────────
 const dc=document.getElementById('dc');
@@ -840,8 +715,7 @@ document.getElementById('spd').addEventListener('input',function(){sspd=parseFlo
 window.addEventListener('resize',()=>{
   hc.width=hc.offsetWidth;
   if(lInited){lc.width=lc.offsetWidth;lc.height=lc.offsetHeight||340;}
-  if(rhInited){rhc.width=rhc.offsetWidth;rhc.height=rhc.offsetHeight||360;}
-  if(dInited){dc.width=dc.offsetWidth;dc.height=dc.offsetHeight||260;}
+if(dInited){dc.width=dc.offsetWidth;dc.height=dc.offsetHeight||260;}
   if(simInited){simC.width=simC.offsetWidth;}
 });
 </script>
